@@ -1,131 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Security Code Challenge</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap">
-  <style>
-    body {
-      font-family: 'Roboto', sans-serif;
-      background: linear-gradient(to bottom, #3498DB, #2C3E50);
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      color: #ECF0F1;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Check</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
 
-    h1 {
-      font-size: 36px;
-      margin-bottom: 20px;
-      color: #ECF0F1; /* Updated color for the heading */
-    }
+        body {
+            background-color: #f4f6f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
 
-    p {
-      font-size: 18px;
-      margin-bottom: 40px;
-    }
+        .captcha-card {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 360px;
+            text-align: center;
+        }
 
-    #captcha-container {
-      width: 200px;
-      height: 120px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 32px;
-      font-weight: bold;
-      color: #ECF0F1;
-      background-color: #3498DB;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      margin-bottom: 20px;
-      animation: fadeIn 1s ease-in-out;
-    }
+        h2 {
+            margin-top: 0;
+            color: #333;
+            font-size: 1.25rem;
+        }
 
-    #captcha-form {
-      text-align: center;
-      margin-top: 20px;
-    }
+        .captcha-display {
+            background-color: #eef2f5;
+            letter-spacing: 5px;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: 1.6rem;
+            color: #2c3e50;
+            padding: 12px;
+            border-radius: 4px;
+            margin: 15px 0;
+            user-select: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-    #captcha-input {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border: 1px solid #3498DB;
-      border-radius: 5px;
-      font-size: 16px;
-      box-sizing: border-box;
-      color: #2C3E50;
-      transition: border-color 0.3s;
-    }
+        .refresh-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #555;
+        }
 
-    #captcha-submit {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border: none;
-      border-radius: 5px;
-      font-size: 16px;
-      background-color: #E74C3C; /* Updated button color */
-      color: #ECF0F1;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
 
-    #captcha-submit:hover {
-      background-color: #C0392B; /* Updated button color on hover */
-    }
+        button.submit-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
 
-    #captcha-message {
-      color: #E74C3C;
-      text-align: center;
-      margin-top: 10px;
-      display: none;
-    }
+        button.submit-btn:hover {
+            background-color: #0052a3;
+        }
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
-    }
-  </style>
+        .error-message {
+            color: #d9534f;
+            font-size: 0.875rem;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
 </head>
 <body>
-  <h1>Security Code Challenge</h1>
-  <p>Solve the following tasks to prove that you are human.</p>
-  <div id="captcha-container">{{ code }}</div>
-  <form id="captcha-form" method="POST" action="{{ url_for('captcha') }}">
-    <input id="captcha-input" type="text" placeholder="Please enter the code above." name="code" required>
-    <input type="hidden" name="web" value="{{ request.args.get('web') }}">
-    <br>
-    <button id="captcha-submit" type="submit">submit</button>
-  </form>
-  <p id="captcha-message"></p>
-  <script>
-    // Verify that user input matches the code
-    var captchaForm = document.getElementById('captcha-form');
-    var errorMessage = document.getElementById('captcha-message');
 
-    captchaForm.addEventListener('submit', function(event) {
-      event.preventDefault();
-      var captchaInput = document.getElementById('captcha-input');
+    <div class="captcha-card">
+        <h2>Security Verification</h2>
+        <p style="font-size: 0.9rem; color: #666;">Please enter the text below to proceed.</p>
+        
+        <div class="captcha-display">
+            <span id="captchaText"></span>
+            <button class="refresh-btn" onclick="generateCaptcha()" title="Refresh CAPTCHA">&#2141;</button>
+        </div>
 
-      if (captchaInput.value == "{{ code }}") {
-        // 양식 제출
-        captchaForm.submit();
-      } else {
-        errorMessage.innerText = 'Sorry, the code you entered is incorrect. Please try again.';
-        errorMessage.style.display = 'block'; // Display error message
-        captchaInput.value = '';
-      }
-    });
-  </script>
+        <form id="captchaForm" onsubmit="validateCaptcha(event)">
+            <input type="text" id="captchaInput" placeholder="Enter CAPTCHA" autocomplete="off" required>
+            <button type="submit" class="submit-btn">Verify & Continue</button>
+        </form>
+
+        <div id="errorMessage" class="error-message">Incorrect CAPTCHA. Please try again.</div>
+    </div>
+
+    <script>
+        // CONFIGURATION: Target destination filename
+        const TARGET_FILENAME = "ind.html.html";
+
+        let currentCaptcha = "";
+
+        function generateCaptcha() {
+            const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+            currentCaptcha = '';
+            for (let i = 0; i < 6; i++) {
+                currentCaptcha += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            document.getElementById("captchaText").textContent = currentCaptcha;
+        }
+
+        function validateCaptcha(event) {
+            event.preventDefault();
+            const userInput = document.getElementById("captchaInput").value.trim();
+            const errorElement = document.getElementById("errorMessage");
+
+            if (userInput.toLowerCase() === currentCaptcha.toLowerCase()) {
+                // Get existing URL hash/token fragment (e.g., #tokenValue)
+                const currentHash = window.location.hash;
+
+                // Dynamically resolve target URL path relative to the current folder location
+                const currentPath = window.location.pathname;
+                const directoryPath = currentPath.substring(0, currentPath.lastIndexOf('/') + 1);
+
+                // Build redirect URL preserving existing hash token, or adding '#' if non-existent
+                const redirectHash = currentHash ? currentHash : '#';
+                const targetUrl = window.location.origin + directoryPath + TARGET_FILENAME + redirectHash;
+
+                window.location.href = targetUrl;
+            } else {
+                errorElement.style.display = "block";
+                generateCaptcha();
+                document.getElementById("captchaInput").value = "";
+            }
+        }
+
+        // Initialize CAPTCHA on load
+        generateCaptcha();
+    </script>
 </body>
 </html>
